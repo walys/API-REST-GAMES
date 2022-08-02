@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loja de Games</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/buttons/2.2.3/css/buttons.dataTables.min.css" rel="stylesheet">
+    <link href='https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css' rel='stylesheet'>
+   
+</head>
+<style>
+    tr{
+        text-align: center;
+    }
+    th{
+        text-align: center;
+    }
+    th.dt-center, td.dt-center { text-align: center; }
+</style>
+<body>
+
+    <main>
+        <div class="container py-4">
+        <header class="pb-3 mb-4 border-bottom">
+            <i class='bx bxs-game bx-spin' style="font-size: 2rem;"></i>
+            <span class="fs-4">CONSUMINDO API REST DE GAMES COM NODE E AXIOS JS</span>
+        </header>
+        </div>
+    </main>
+    
+    <div class="container">
+        <h3>CONSUMINDO API REST DE GAMES COM AXIOS SEM DATATABLE</h3>
+        <hr>
+        <div class="container">
+            <button type="button" class="btn btn-primary btn-create-game" data-toggle="modal"> 
+                <i class='bx bxs-add-to-queue'></i>  Inserir Game
+            </button>
+        </div>
+        <hr>
+        <table class="table table-striped" width="100%" cellspacing="0">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Title</th>
+                    <th scope="col">Years</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Edit</th>
+                    <th scope="col">Delete</th>
+                </tr>
+            </thead>
+            <tbody id="games">
+
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modal Cadastrar Game -->
+    <div class="modal fade" id="EditGameModal" tabindex="-1" aria-labelledby="EditGameModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="EditGameModalLabel">
+                <i class='bx bxs-game bx-spin' style="font-size: 20px;"></i>Cadastrar Game
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+
+                    <input type="hidden" class="form-control" id="id_edit" name="id_edit">
+
+                    <div class="mb-3">
+                      <label for="title-name" class="col-form-label">Title:</label>
+                      <input type="text" class="form-control" id="title_edit" name="title_edit">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="year-name" class="col-form-label">Years:</label>
+                        <input type="number" class="form-control" id="year_edit" name="year_edit">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="price-name" class="col-form-label">Price:</label>
+                        <input type="number" class="form-control" id="price_edit" name="price_edit">
+                    </div>
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                <i class='bx bx-window-close' style="font-size: 15px;"></i> CANCELAR
+            </button>
+            <button type="button" onclick="return EditGame()" class="btn btn-danger">
+                <i class='bx bxs-save' style="font-size: 15px;"></i>SALVAR
+            </button>
+            </div>
+        </div>
+        </div>
+    </div>
+
+    <!-- Modal Editar Game-->
+    <div class="modal fade" id="EditGameModal" tabindex="-1" aria-labelledby="EditGameModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="EditGameModalLabel">
+                <i class='bx bxs-game bx-spin' style="font-size: 20px;"></i>Editar Game
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+
+                    <input type="hidden" class="form-control" id="id" name="id">
+
+                    <div class="mb-3">
+                      <label for="title-name" class="col-form-label">Title:</label>
+                      <input type="text" class="form-control" id="title" name="title">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="year-name" class="col-form-label">Years:</label>
+                        <input type="number" class="form-control" id="year" name="year">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="price-name" class="col-form-label">Price:</label>
+                        <input type="number" class="form-control" id="price" name="price">
+                    </div>
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                <i class='bx bx-window-close' style="font-size: 15px;"></i> CANCELAR
+            </button>
+            <button type="button" onclick="return createGame()" class="btn btn-danger">
+                <i class='bx bxs-save' style="font-size: 15px;"></i>SALVAR
+            </button>
+            </div>
+        </div>
+        </div>
+    </div>
+
+    
+</body>
+
+<script src="https://unpkg.com/boxicons@2.1.2/dist/boxicons.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.2.3/js/dataTables.buttons.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.html5.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="languageDatatable.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+</html>
+<script>
+    //CREATE DE INFORMAÇÃO
+    function createGame(){
+        var titleInput = document.getElementById("title");
+        var yearInput = document.getElementById("year");
+        var priceInput = document.getElementById("price");
+        var ultimo_id = $("#games tr").length;
+
+        var game = {
+            id: ultimo_id+1,
+            title: titleInput.value,
+            year: yearInput.value,
+            price: priceInput.value
+        }
+
+        axios.post("http://localhost:4040/game",game).then(response =>{
+            
+            if(response.status == 200){
+                swal("Sucesso!", "Game Cadastrado com sucesso!", "success")
+                .then((value) => {
+                    window.location ='';
+                });
+            }
+
+        }).catch(err =>{
+            swal("Opss!", "Não consegui enviar os dados!", "warning")
+            console.log(err);
+        })
+    }
+    //EXCLUZÃO DE INFORMAÇÃO     
+    function Degame(id){
+        swal({
+        title: "Tem certeza?",
+        text: "Uma vez excluído, você não poderá recuperar esta informação!",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+        })
+        .then((willDelete) => {
+        if (willDelete) {
+            axios.delete("http://localhost:4040/game/"+id).then(response =>{
+                swal("Sucesso!", "Ok! Sua informação foi deletado!", "success")
+                .then((value) => {
+                    window.location ='';
+                });
+            }).catch(err =>{
+                swal("Opss!", "Não consegui enviar os dados!", "warning")
+                console.log(err);
+            })
+        } else {
+            swal("Sua informação está seguro!", {
+            icon: "success",
+            });
+        }
+        });
+    }
+
+    function Getgame(id){
+        axios.get("http://localhost:4040/games/"+id).then(response =>{
+            var games = response.data;   
+            document.querySelector("[name='id_edit']").value = games.id;
+            document.querySelector("[name='title_edit']").value = games.title;
+            document.querySelector("[name='year_edit']").value = games.year;
+            document.querySelector("[name='price_edit']").value = games.price;
+            console.log(games);
+            $('#EditGameModal').modal('show');
+        }).catch(error =>{
+            swal("Opss!", "Não consegui opter os dados", "warning");
+            console.log(error);
+        })
+    }
+
+    function EditGame(){   
+        var idInput = document.getElementById("id_edit");     
+        var titleInput = document.getElementById("title_edit");
+        var yearInput = document.getElementById("year_edit");
+        var priceInput = document.getElementById("price_edit");
+
+        var game = {
+            title: titleInput.value,
+            year: yearInput.value,
+            price: priceInput.value
+        }
+        var id = idInput.value;
+
+        console.log(game);
+        console.log(id);
+        axios.put("http://localhost:4040/game/"+id,game).then(response =>{
+            
+            if(response.status == 200){
+                swal("Salvo!", "Dados alterados com sucesso!", "success")
+                .then((value) => {
+                    window.location ='';
+                });
+            }
+
+        }).catch(err =>{
+            swal("Sucesso!", "Não consegui enviar os dados!", "warning")
+            console.log(err);
+        })
+    }
+
+    
+    //CONSUMO DE API REST COM AXIOS SEM DATATABLE
+    axios.get("http://localhost:4040/games").then(response =>{
+        console.log('Consegui opter os dados');
+        console.log(response)
+
+        var games = response.data;
+        var list = document.getElementById("games");
+
+        games.forEach(game =>{
+            var item = document.createElement("tr");
+            item.innerHTML = "<td>"+game.id+"</td>";
+            item.innerHTML += "<td>"+game.title+"</td>";
+            item.innerHTML += "<td>"+game.year+"</td>";
+            item.innerHTML += "<td>R$ "+game.price+"</td>";
+            item.innerHTML += '<td><a onclick="return Getgame('+game.id+')" class="btn btn-warning"><i class="bx bxs-edit bx-flashing"></i></a></td>';
+            item.innerHTML += '<td><a onclick="return Degame('+game.id+')" class="btn btn-danger"><i class="bx bxs-trash bx-flashing"></i></a></td>';
+            list.appendChild(item);
+        });
+
+    }).catch(error =>{
+        swal("Opss!", "Não consegui opter os dados", "warning")
+        console.log(error)
+    })
+
+    $('button.btn-create-game').on('click', function() {
+        $('#GameModal').modal('show');
+    })
+
+
+ 
+     
+</script>
